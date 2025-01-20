@@ -18,7 +18,7 @@ Pastikan Anda sudah memiliki API Key dari Gemini. Anda dapat mendaftarkan API Ke
 1. Clone repository:
    ```bash
    git clone https://github.com/epizondesign/metadata.git
-   cd your-repo-name
+   cd metadata
 2. Install dependencies:
 pip install -r requirements.txt
 3. Struktur File Input
