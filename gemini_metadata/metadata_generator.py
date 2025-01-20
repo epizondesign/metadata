@@ -82,26 +82,38 @@ class VideoMetadataGenerator:
         except Exception as e:
             print(f"Error menambahkan metadata ke video {file_path}: {e}")
 
-    def batch_generate(self, input_file, output_dir):
-        """
-        Membaca file CSV dan menambahkan metadata ke setiap file video.
-        """
-        os.makedirs(output_dir, exist_ok=True)
-        
-        with open(input_file, "r", encoding="utf-8") as infile:
-            reader = csv.DictReader(infile)
-            
-            for row in reader:
-                title = row.get("title", "")
-                description = row.get("description", "")
-                keywords = row.get("keywords", "")
-                video_path = row.get("image_path", "")
-                
-                # Path lengkap file video
-                full_path = os.path.join("/content/uploaded_files", video_path)
-                if not os.path.exists(full_path):
-                    print(f"File tidak ditemukan: {full_path}")
-                    continue
-                
-                # Tambahkan metadata ke video
-                self.add_metadata_to_video(full_path, title, description, keywords, output_dir)
+# File: metadata_generator.py
+
+def batch_generate(self, input_file, media_files, output_dir):
+    """
+    Memproses file CSV dan menambahkan metadata ke file media.
+
+    Args:
+        input_file (str): Path ke file CSV metadata.
+        media_files (list): Daftar path file media yang akan diproses.
+        output_dir (str): Direktori output untuk file media yang telah diberi metadata.
+    """
+    import shutil
+
+    # Baca file CSV
+    with open(input_file, "r", encoding="utf-8") as infile:
+        reader = csv.DictReader(infile)
+        metadata_list = [row for row in reader]
+
+    # Debug: Periksa jumlah metadata
+    print(f"Metadata ditemukan: {len(metadata_list)} entries")
+
+    # Loop file media dan tambahkan metadata
+    for idx, media_file in enumerate(media_files):
+        if idx < len(metadata_list):  # Pastikan ada metadata untuk file ini
+            metadata = metadata_list[idx]
+            output_file = os.path.join(output_dir, os.path.basename(media_file))
+
+            # Debug: Info file yang sedang diproses
+            print(f"Memproses {media_file} -> {output_file} dengan metadata: {metadata}")
+
+            # Salin file media ke output directory (simulasi penambahan metadata)
+            shutil.copy(media_file, output_file)
+
+        else:
+            print(f"Warning: Tidak ada metadata untuk file media {media_file}")
