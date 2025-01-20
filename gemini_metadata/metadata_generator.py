@@ -11,7 +11,6 @@ class MetadataGenerator:
         Tambahkan metadata ke file gambar menggunakan EXIF.
         """
         from PIL import Image
-        from PIL.ExifTags import TAGS
         import piexif
         
         # Buka file gambar
@@ -26,7 +25,8 @@ class MetadataGenerator:
             
             # Simpan gambar dengan metadata baru
             output_path = os.path.join(output_dir, os.path.basename(file_path))
-            piexif.insert(piexif.dump(exif_dict), file_path, output_path)
+            piexif.insert(piexif.dump(exif_dict), file_path)
+            img.save(output_path)
             print(f"Metadata berhasil ditambahkan ke file: {output_path}")
         except Exception as e:
             print(f"Error menambahkan metadata ke file {file_path}: {e}")
@@ -35,7 +35,6 @@ class MetadataGenerator:
         """
         Membaca file CSV dan menambahkan metadata ke setiap file gambar.
         """
-        # Pastikan folder output ada
         os.makedirs(output_dir, exist_ok=True)
         
         # Baca file CSV
@@ -52,6 +51,12 @@ class MetadataGenerator:
                 # Path lengkap file gambar
                 full_path = os.path.join("/content/uploaded_files", image_path)
                 if not os.path.exists(full_path):
+                    print(f"File tidak ditemukan: {full_path}")
+                    continue
+                
+                # Tambahkan metadata ke file
+                self.add_metadata_to_file(full_path, title, description, keywords, output_dir)
+
 class VideoMetadataGenerator:
     def __init__(self, api_key):
         self.api = GeminiAPI(api_key)
@@ -100,9 +105,3 @@ class VideoMetadataGenerator:
                 
                 # Tambahkan metadata ke video
                 self.add_metadata_to_video(full_path, title, description, keywords, output_dir)
-
-                    print(f"File tidak ditemukan: {full_path}")
-                    continue
-                
-                # Tambahkan metadata ke file
-                self.add_metadata_to_file(full_path, title, description, keywords, output_dir)
